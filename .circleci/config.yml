@@ -19,9 +19,27 @@ jobs:
               --template-file template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-east-1
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "34:b8:83:88:95:73:32:a8:45:a2:fd:c0:2d:e5:95:a5"
+      - run:
+          name: Install dependencies
+          command: |
+            # Install the dependencies for ansible
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt main.yml
 # Sequential workflow
 workflows:
   # Name the workflow
   super_workflow:
     jobs:
       - create_infrastructure
+      - configure_infrastructure
