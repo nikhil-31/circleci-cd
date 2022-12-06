@@ -62,7 +62,7 @@ jobs:
             else
               return 1
             fi
-      - destroy_environment 
+      - destroy-environment 
 # Sequential workflow
 workflows:
   # Name the workflow
