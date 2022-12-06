@@ -48,7 +48,7 @@ jobs:
             echo "[all]" > inventory
             ls
             pwd
-            cat inventory.txt
+            cat inventory
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:cd-deployment,Values=ansible-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -56,13 +56,13 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:cd-deployment,Values=ansible-${CIRCLE_WORKFLOW_ID:0:7}"
-            cat inventory.txt
+            cat inventory
             ls 
             pwd
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/inventory.txt
+            - project/inventory
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -78,12 +78,12 @@ jobs:
             # Install the dependencies for ansible
             ls
             pwd
-            cat inventory.txt
+            cat inventory
             apk add --update ansible
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i inventory.txt main.yml
+            ansible-playbook -i inventory main.yml
   smoke-test:
     docker:
       - image: alpine:latest
