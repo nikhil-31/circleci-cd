@@ -46,19 +46,10 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             echo "[all]" > inventory
-            ls
-            pwd
-            cat inventory
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:cd-deployment,Values=ansible-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> inventory
-            aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:cd-deployment,Values=ansible-${CIRCLE_WORKFLOW_ID:0:7}"
-            cat inventory
-            ls 
-            pwd
       - persist_to_workspace:
           root: ~/
           paths:
