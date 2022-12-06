@@ -49,7 +49,7 @@ jobs:
             ls
             pwd
             cat inventory.txt
-            sudo aws ec2 describe-instances \
+            aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:cd-deployment,Values=ansible-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> inventory
