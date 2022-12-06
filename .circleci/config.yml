@@ -14,7 +14,6 @@ executors:
     docker:
       - image: python:3.9.0-alpine
 
-
 commands:
   destroy-environment:
     steps:
@@ -60,14 +59,10 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["06:55:19:5c:75:9c:0c:fa:5e:f0:ed:c4:2b:35:ec:76"]
       - attach_workspace:
-          at: ~/
+          at: .
       - run:
           name: Install dependencies
           command: |
-            # Install the dependencies for ansible
-            ls
-            pwd
-            cat inventory
             apk add --update ansible
             ansible --version
       - run:
