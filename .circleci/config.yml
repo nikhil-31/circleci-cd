@@ -76,7 +76,7 @@ jobs:
             pwd &&
             ls -la
             cat inventory
-            ansible-playbook -i inventory.txt main.yml
+            ansible-playbook -i inventory main.yml
   smoke-test:
     docker:
       - image: alpine:latest
