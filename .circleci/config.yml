@@ -40,7 +40,7 @@ jobs:
             echo "[all]" > inventory
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=cd-deployment,Values=ansible" \
+              --filters "Name=tag:cd-deployment,Values=ansible" \
               --output text >> inventory
             cat inventory.txt
       - persist_to_workspace:
