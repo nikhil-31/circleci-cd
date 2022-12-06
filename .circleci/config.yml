@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            sudo echo "[all]" > inventory
+            echo "[all]" > inventory
             ls
             pwd
             cat inventory.txt
