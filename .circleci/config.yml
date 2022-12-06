@@ -70,9 +70,13 @@ jobs:
             pwd
             cat inventory
             apk add --update ansible
+            ansible --version
       - run:
           name: Configure server
           command: |
+            pwd &&
+            ls -la
+            cat inventory
             ansible-playbook main.yml -i inventory
   smoke-test:
     docker:
