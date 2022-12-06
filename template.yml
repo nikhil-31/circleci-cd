@@ -9,6 +9,9 @@ Resources:
       KeyName: udacity-pem
       ImageId: 'ami-08c40ec9ead489470' 
       InstanceType: t2.micro
+      Tags:
+        - Key: "cd-deployment"
+          Value: "ansible"
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:

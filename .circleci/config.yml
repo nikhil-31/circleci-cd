@@ -22,6 +22,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
+      - run:
           name: Create Cloudformation Stack
           command: |
             ls -lah
@@ -30,6 +34,19 @@ jobs:
               --template-file template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-east-1
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            echo "[all]" > inventory
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=cd-deployment,Values=ansible" \
+              --output text >> inventory
+            cat inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/inventory.txt
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -37,10 +54,15 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["34:b8:83:88:95:73:32:a8:45:a2:fd:c0:2d:e5:95:a5"]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
             # Install the dependencies for ansible
+            ls
+            pwd
+            cat inventory.txt
             apk add --update ansible
       - run:
           name: Configure server
