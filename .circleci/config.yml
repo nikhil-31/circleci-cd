@@ -5,7 +5,16 @@ orbs:
   # Declare a dependency on the welcome-orb
   # welcome: circleci/welcome-orb@0.4.1
   aws-cli: circleci/aws-cli@2.0.3
-  
+
+executors:
+  aws: 
+    docker:
+      - image: amazon/aws-cli
+  python:
+    docker:
+      - image: python:3.7-alpine3.11
+
+
 commands:
   destroy-environment:
     steps:
@@ -28,18 +37,17 @@ jobs:
       - run:
           name: Create Cloudformation Stack
           command: |
-            ls -lah
-            pwd
             aws cloudformation deploy \
               --template-file template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --region us-east-1
-      - run: apt-get install -y sudo
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             sudo echo "[all]" > inventory
+            ls
+            pwd
             cat inventory.txt
             sudo aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
@@ -49,6 +57,8 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:cd-deployment,Values=ansible-${CIRCLE_WORKFLOW_ID:0:7}"
             cat inventory.txt
+            ls 
+            pwd
       - persist_to_workspace:
           root: ~/
           paths:
